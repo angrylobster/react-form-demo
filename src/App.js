@@ -3,7 +3,7 @@ import './App.css';
 
 function App() {
     return (
-        <div style={{ padding: '32px' }}>
+        <div style={{ padding: '16px 32px' }}>
             <h3>My First Form</h3>
         </div>
     );
