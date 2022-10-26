@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
-import { UserForm } from './components';
-import { UserList } from './components/UserList';
+import { UserForm, UserList } from './components';
 
 class App extends React.Component {
     render() {
