@@ -1,24 +1,34 @@
+import { limitToFirst, onValue, orderByChild, query, ref, remove } from 'firebase/database';
 import React from 'react';
+import { db } from '../../firebase';
 
 export class UserList extends React.Component {
     constructor() {
         super();
         this.state = {
-            users: [
-                {
-                    id: 1,
-                    name: 'Banana',
-                    age: 42,
-                    gender: 'male',
-                    favoriteFood: 'Chicken',
-                    description: 'Some description'
-                }
-            ]
+            users: []
         };
     }
 
     deleteUser(id) {
         console.log(`Deleting user with ID ${id}`);
+
+        remove(ref(db, `users/${id}`));
+    }
+
+    componentDidMount() {
+        const usersRef = query(ref(db, 'users'), orderByChild('age'), limitToFirst(2));
+
+        onValue(usersRef, (snapshot) => {
+            const users = [];
+            snapshot.forEach((childSnapshot) => {
+                users.push(childSnapshot.val());
+            });
+
+            this.setState({
+                users
+            });
+        });
     }
 
     render() {
@@ -28,17 +38,15 @@ export class UserList extends React.Component {
                 {this.state.users.map(
                     ({ id, name, age, gender, favoriteFood, description }, index) => (
                         <div key={index}>
-                            {id !== this.state.isEditing && (
-                                <div>
-                                    <h4 style={{ marginBottom: 8 }}>{name}</h4>
-                                    <div>Age: {age}</div>
-                                    <div>Gender: {gender}</div>
-                                    <div>Favorite food: {favoriteFood}</div>
-                                    <div>Description: {description}</div>
+                            <div>
+                                <h4 style={{ marginBottom: 8 }}>{name}</h4>
+                                <div>Age: {age}</div>
+                                <div>Gender: {gender}</div>
+                                <div>Favorite food: {favoriteFood}</div>
+                                <div>Description: {description}</div>
 
-                                    <button onClick={() => this.deleteUser(id)}>Delete</button>
-                                </div>
-                            )}
+                                <button onClick={() => this.deleteUser(id)}>Delete</button>
+                            </div>
                         </div>
                     )
                 )}

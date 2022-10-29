@@ -1,5 +1,8 @@
 import { FOOD_OPTIONS } from './constants';
 import React from 'react';
+import { ref, set } from 'firebase/database';
+import { db } from '../../firebase';
+import { v4 as uuid } from 'uuid';
 
 export class UserForm extends React.Component {
     constructor() {
@@ -19,15 +22,17 @@ export class UserForm extends React.Component {
         });
     }
 
+    createUser(e) {
+        e.preventDefault();
+        set(ref(db, `users/${uuid()}`), this.state);
+    }
+
     render() {
         return (
             <div>
                 <h3>Create User Form</h3>
 
-                <form
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                    }}>
+                <form onSubmit={(e) => this.createUser(e)}>
                     <div className="form-item">
                         <label htmlFor="name">Name</label>
                         <input
