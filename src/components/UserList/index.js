@@ -1,4 +1,4 @@
-import { limitToFirst, onValue, orderByChild, query, ref, remove } from 'firebase/database';
+import { onValue, orderByChild, query, ref, remove } from 'firebase/database';
 import React from 'react';
 import { db } from '../../firebase';
 
@@ -17,12 +17,12 @@ export class UserList extends React.Component {
     }
 
     componentDidMount() {
-        const usersRef = query(ref(db, 'users'), orderByChild('age'), limitToFirst(2));
+        const usersRef = query(ref(db, 'users'), orderByChild('age'));
 
         onValue(usersRef, (snapshot) => {
             const users = [];
             snapshot.forEach((childSnapshot) => {
-                users.push(childSnapshot.val());
+                users.push({ ...childSnapshot.val(), id: childSnapshot.key });
             });
 
             this.setState({
