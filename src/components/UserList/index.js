@@ -1,6 +1,8 @@
-import { onValue, orderByChild, query, ref, remove } from 'firebase/database';
 import React from 'react';
-import { db } from '../../firebase';
+import {
+    deleteUser as deleteFirebaseUser,
+    createUsersListener as createFirebaseUsersListener
+} from '../../firebase';
 
 export class UserList extends React.Component {
     constructor() {
@@ -10,16 +12,8 @@ export class UserList extends React.Component {
         };
     }
 
-    deleteUser(id) {
-        console.log(`Deleting user with ID ${id}`);
-
-        remove(ref(db, `users/${id}`));
-    }
-
     componentDidMount() {
-        const usersRef = query(ref(db, 'users'), orderByChild('age'));
-
-        onValue(usersRef, (snapshot) => {
+        createFirebaseUsersListener((snapshot) => {
             const users = [];
             snapshot.forEach((childSnapshot) => {
                 users.push({ ...childSnapshot.val(), id: childSnapshot.key });
@@ -29,6 +23,10 @@ export class UserList extends React.Component {
                 users
             });
         });
+    }
+
+    deleteUser(id) {
+        deleteFirebaseUser(id);
     }
 
     render() {

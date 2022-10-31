@@ -1,8 +1,6 @@
 import { FOOD_OPTIONS } from './constants';
 import React from 'react';
-import { ref, set } from 'firebase/database';
-import { db } from '../../firebase';
-import { v4 as uuid } from 'uuid';
+import { createUser as createFirebaseUser } from '../../firebase';
 
 export class UserForm extends React.Component {
     constructor() {
@@ -24,7 +22,7 @@ export class UserForm extends React.Component {
 
     createUser(e) {
         e.preventDefault();
-        set(ref(db, `users/${uuid()}`), this.state);
+        createFirebaseUser(this.state);
     }
 
     render() {
